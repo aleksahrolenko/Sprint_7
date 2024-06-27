@@ -47,9 +47,9 @@ public class CreateOrderTest {
     @Test
     public void makeOrder()
     {
-        int statusCode = orderClient.order(createOrder).extract().statusCode();
+        int statusCode = OrderClient.order(createOrder).extract().statusCode();
         assertEquals("Вернулся некорректный код состояния, должен быть 201", SC_CREATED, statusCode);
-        int orderTrack = orderClient.order(createOrder).extract().path("track");
+        Integer orderTrack = OrderClient.order(createOrder).extract().path("track");
         assertNotNull("Значение параметра \"track\" не должно быть пустым", orderTrack);
 
     }

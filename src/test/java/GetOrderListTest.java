@@ -22,14 +22,11 @@ public class GetOrderListTest
     private Courier courierOrderList;
     private CourierClient courierClient;
 
-    private OrderClient orderClient;
-
     @Before
     public void setUp()
     {
         courierOrderList = GenerateCourier.getOrderListCourier();
         courierClient = new CourierClient();
-        orderClient = new OrderClient();
     }
 
     @After
@@ -46,7 +43,7 @@ public class GetOrderListTest
         courierClient.create(courierOrderList);
         ValidatableResponse loginResponse = courierClient.login(CourierCredentials.from(courierOrderList));
         id = loginResponse.extract().path("id");
-        ValidatableResponse response = orderClient.getAllOrders();
+        ValidatableResponse response =  OrderClient.getAllOrders();
         int statusCode = response.extract().statusCode();
         assertEquals("Код состояния должен быть 200", SC_OK, statusCode);
         ArrayList<String> orderBody = response.extract().path("orders");

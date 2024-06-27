@@ -13,15 +13,11 @@ public class GenerateCourier
     }
 
     public static Courier existedLogin() {
-        return new Courier("test828", "3333", "alex1");
-    }
-
-    public static Courier existedLogin1() {
-        return new Courier("test828", "34444", "alex2");
+        return new Courier("test828", "34444", "alex1");
     }
 
     public static Courier createWithoutPassword() {
-        return new Courier("you90", "alex3");
+        return new Courier("you90", "alex2");
     }
 
 }

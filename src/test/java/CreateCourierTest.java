@@ -17,7 +17,6 @@ public class CreateCourierTest {
     private Courier courier;
     private Courier courierWithoutPassword;
     private Courier courierWithExistedLogin;
-    private Courier courierWithExistedLogin1;
     private CourierClient courierClient;
 
     private int id;
@@ -29,25 +28,30 @@ public class CreateCourierTest {
         courierClient = new CourierClient();
         courierWithoutPassword = GenerateCourier.createWithoutPassword();
         courierWithExistedLogin = GenerateCourier.existedLogin();
-        courierWithExistedLogin1 = GenerateCourier.existedLogin1();
     }
 
     @DisplayName("Check if courier can be created")
     @Description("При создании курьера возвращается 201 True, а при последующем логине - непустой id")
     @Test
-    public void courierCanBeCreatedTest()
-    {
+    public void courierCanBeCreatedTest() {
+    Integer courierId = null;
+    try {
         ValidatableResponse response = courierClient.create(courier);
         int statusCode = response.extract().statusCode();
         assertEquals("Код состояния должен быть 201", SC_CREATED, statusCode);
         boolean isCreated = response.extract().path("ok");
         assertTrue("Аккаунт курьера не создан", isCreated);
+
         ValidatableResponse loginResponse = courierClient.login(CourierCredentials.from(courier));
         int loginStatusCode = loginResponse.extract().statusCode();
         assertEquals("Код состояния должен быть 200", SC_OK, loginStatusCode);
-        id = loginResponse.extract().path("id");
-        assertNotNull("ID пустой", id);
-        courierClient.delete(id);
+        courierId = loginResponse.extract().path("id");
+        assertNotNull("ID курьера не может быть пустым", courierId);
+        } finally {
+        if (courierId!=null){
+            courierClient.delete(courierId);
+        }
+    }
     }
 
     @DisplayName("Courier without password")
@@ -67,7 +71,7 @@ public class CreateCourierTest {
     @Test
     public void courierWithExistingLogin()
     {
-        ValidatableResponse response = courierClient.create(courierWithExistedLogin1);
+        ValidatableResponse response = courierClient.create(courierWithExistedLogin);
         int statusCode = response.extract().statusCode();
         assertEquals("Вернулся некорректный код состояния, должен быть 409", SC_CONFLICT, statusCode);
         String message409 = response.extract().path("message");
