@@ -12,25 +12,21 @@ import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import  order.OrderColors;
+import order.OrderColors;
 
 @RunWith(Parameterized.class)
 public class CreateOrderTest {
     private CreateOrder createOrder;
-    private OrderClient orderClient;
     private String[] color;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         createOrder = CreateOrderGenerator.getDefault();
-        orderClient = new OrderClient();
     }
 
     public CreateOrderTest(String[] color) {
         this.color = color;
     }
-
 
     @Parameterized.Parameters
     public static Object[][] makeOrderWithParam() {
@@ -45,12 +41,13 @@ public class CreateOrderTest {
     @DisplayName("Create orders with different colors")
     @Description("Создаём заказы с разными цветами, их комбинацией и пустым значением")
     @Test
-    public void makeOrder()
-    {
+    public void makeOrder() {
+        createOrder.setColor(this.color);
+
         int statusCode = OrderClient.order(createOrder).extract().statusCode();
         assertEquals("Вернулся некорректный код состояния, должен быть 201", SC_CREATED, statusCode);
-        Integer orderTrack = OrderClient.order(createOrder).extract().path("track");
-        assertNotNull("Значение параметра \"track\" не должно быть пустым", orderTrack);
 
+        Integer orderTrack = OrderClient.order(createOrder).extract().path("track");
+        assertNotNull("Значение параметра 'track' не должно быть пустым", orderTrack);
     }
 }
